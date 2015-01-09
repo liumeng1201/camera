@@ -3330,8 +3330,6 @@ public class Preview implements SurfaceHolder.Callback {
 				}
 
 				System.gc();
-				// TODO
-				// success && picFile != null //
 
 				if (MyDebug.LOG)
 					Log.d(TAG, "remaining_burst_photos: " + remaining_burst_photos);
@@ -3356,6 +3354,11 @@ public class Preview implements SurfaceHolder.Callback {
 						showGUI(false);
 						takePictureWhenFocused();
 					}
+				}
+				
+				// TODO 拍照成功
+				if (success && picFile != null) {
+					
 				}
 			}
 		};
