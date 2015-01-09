@@ -70,11 +70,11 @@ class CameraController1 extends CameraController {
 				if( MyDebug.LOG )
 					Log.d(TAG, " supports flash_off");
 			}
-			if( supported_flash_modes.contains(Camera.Parameters.FLASH_MODE_AUTO) ) {
-				output_modes.add("flash_auto");
-				if( MyDebug.LOG )
-					Log.d(TAG, " supports flash_auto");
-			}
+//			if( supported_flash_modes.contains(Camera.Parameters.FLASH_MODE_AUTO) ) {
+//				output_modes.add("flash_auto");
+//				if( MyDebug.LOG )
+//					Log.d(TAG, " supports flash_auto");
+//			}
 			if( supported_flash_modes.contains(Camera.Parameters.FLASH_MODE_ON) ) {
 				output_modes.add("flash_on");
 				if( MyDebug.LOG )
@@ -85,11 +85,11 @@ class CameraController1 extends CameraController {
 				if( MyDebug.LOG )
 					Log.d(TAG, " supports flash_torch");
 			}
-			if( supported_flash_modes.contains(Camera.Parameters.FLASH_MODE_RED_EYE) ) {
-				output_modes.add("flash_red_eye");
-				if( MyDebug.LOG )
-					Log.d(TAG, " supports flash_red_eye");
-			}
+//			if( supported_flash_modes.contains(Camera.Parameters.FLASH_MODE_RED_EYE) ) {
+//				output_modes.add("flash_red_eye");
+//				if( MyDebug.LOG )
+//					Log.d(TAG, " supports flash_red_eye");
+//			}
 		}
 		return output_modes;
 	}

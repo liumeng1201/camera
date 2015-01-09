@@ -575,8 +575,6 @@ public class Preview implements SurfaceHolder.Callback {
 				camera_controller = new CameraController2(this.getContext(), cameraId);
 			else
 				camera_controller = new CameraController1(cameraId);
-			// throw new RuntimeException(); // uncomment to test camera not
-			// opening
 		} catch (RuntimeException e) {
 			if (MyDebug.LOG)
 				Log.e(TAG, "Failed to open camera: " + e.getMessage());
@@ -584,19 +582,15 @@ public class Preview implements SurfaceHolder.Callback {
 			camera_controller = null;
 		}
 		if (MyDebug.LOG) {
-			Log.d(TAG,
-					"time after opening camera: "
-							+ (System.currentTimeMillis() - debug_time));
+			Log.d(TAG, "time after opening camera: " + (System.currentTimeMillis() - debug_time));
 		}
 		boolean take_photo = false;
 		if (camera_controller != null) {
 			Activity activity = (Activity) this.getContext();
 			if (MyDebug.LOG)
 				Log.d(TAG, "intent: " + activity.getIntent());
-			if (activity.getIntent() != null
-					&& activity.getIntent().getExtras() != null) {
-				take_photo = activity.getIntent().getExtras()
-						.getBoolean(TakePhoto.TAKE_PHOTO);
+			if (activity.getIntent() != null && activity.getIntent().getExtras() != null) {
+				take_photo = activity.getIntent().getExtras().getBoolean(TakePhoto.TAKE_PHOTO);
 				activity.getIntent().removeExtra(TakePhoto.TAKE_PHOTO);
 			} else {
 				if (MyDebug.LOG)
@@ -612,10 +606,6 @@ public class Preview implements SurfaceHolder.Callback {
 					Preview.this.onOrientationChanged(orientation);
 				}
 			}.enable();
-			if (MyDebug.LOG) {
-				// Log.d(TAG, "time after setting orientation: " +
-				// (System.currentTimeMillis() - debug_time));
-			}
 
 			if (MyDebug.LOG)
 				Log.d(TAG, "call setPreviewDisplay");
@@ -623,24 +613,16 @@ public class Preview implements SurfaceHolder.Callback {
 				camera_controller.setPreviewDisplay(mHolder);
 			} catch (IOException e) {
 				if (MyDebug.LOG)
-					Log.e(TAG,
-							"Failed to set preview display: " + e.getMessage());
+					Log.e(TAG, "Failed to set preview display: " + e.getMessage());
 				e.printStackTrace();
-			}
-			if (MyDebug.LOG) {
-				// Log.d(TAG, "time after setting preview display: " +
-				// (System.currentTimeMillis() - debug_time));
 			}
 
 			setupCamera(toast_message, take_photo);
 		}
-		setPopupIcon(); // needed so that the icon is set right even if no flash
-						// mode is set when starting up camera (e.g., switching
-						// to front camera with no flash)
+		setPopupIcon();
 
 		if (MyDebug.LOG) {
-			Log.d(TAG, "total time: "
-					+ (System.currentTimeMillis() - debug_time));
+			Log.d(TAG, "total time: " + (System.currentTimeMillis() - debug_time));
 		}
 
 	}
@@ -985,8 +967,7 @@ public class Preview implements SurfaceHolder.Callback {
 				for (int i = min_exposure; i <= max_exposure; i++) {
 					exposures.add("" + i);
 				}
-				String value = sharedPreferences.getString(
-						CameraActivityNew.getExposurePreferenceKey(), "0");
+				String value = sharedPreferences.getString(CameraActivityNew.getExposurePreferenceKey(), "0");
 				if (MyDebug.LOG)
 					Log.d(TAG, "saved exposure value: " + value);
 				int exposure = 0;
@@ -996,8 +977,7 @@ public class Preview implements SurfaceHolder.Callback {
 						Log.d(TAG, "exposure: " + exposure);
 				} catch (NumberFormatException exception) {
 					if (MyDebug.LOG)
-						Log.d(TAG,
-								"exposure invalid format, can't parse to int");
+						Log.d(TAG, "exposure invalid format, can't parse to int");
 				}
 				if (exposure < min_exposure || exposure > max_exposure) {
 					exposure = 0;
@@ -1005,17 +985,14 @@ public class Preview implements SurfaceHolder.Callback {
 						Log.d(TAG, "saved exposure not supported, reset to 0");
 					if (exposure < min_exposure || exposure > max_exposure) {
 						if (MyDebug.LOG)
-							Log.d(TAG,
-									"zero isn't an allowed exposure?! reset to min "
-											+ min_exposure);
+							Log.d(TAG, "zero isn't an allowed exposure?! reset to min " + min_exposure);
 						exposure = min_exposure;
 					}
 				}
 				camera_controller.setExposureCompensation(exposure);
 				// now save, so it's available for PreferenceActivity
 				SharedPreferences.Editor editor = sharedPreferences.edit();
-				editor.putString(CameraActivityNew.getExposurePreferenceKey(), ""
-						+ exposure);
+				editor.putString(CameraActivityNew.getExposurePreferenceKey(), "" + exposure);
 				editor.apply();
 			}
 		}
@@ -1026,13 +1003,11 @@ public class Preview implements SurfaceHolder.Callback {
 			if (MyDebug.LOG) {
 				for (int i = 0; i < sizes.size(); i++) {
 					CameraController.Size size = sizes.get(i);
-					Log.d(TAG, "supported picture size: " + size.width + " , "
-							+ size.height);
+					Log.d(TAG, "supported picture size: " + size.width + " , " + size.height);
 				}
 			}
 			current_size_index = -1;
-			String resolution_value = sharedPreferences.getString(
-					CameraActivityNew.getResolutionPreferenceKey(cameraId), "");
+			String resolution_value = sharedPreferences.getString(CameraActivityNew.getResolutionPreferenceKey(cameraId), "");
 			if (MyDebug.LOG)
 				Log.d(TAG, "resolution_value: " + resolution_value);
 			if (resolution_value.length() > 0) {
@@ -1040,13 +1015,10 @@ public class Preview implements SurfaceHolder.Callback {
 				int index = resolution_value.indexOf(' ');
 				if (index == -1) {
 					if (MyDebug.LOG)
-						Log.d(TAG,
-								"resolution_value invalid format, can't find space");
+						Log.d(TAG, "resolution_value invalid format, can't find space");
 				} else {
-					String resolution_w_s = resolution_value
-							.substring(0, index);
-					String resolution_h_s = resolution_value
-							.substring(index + 1);
+					String resolution_w_s = resolution_value.substring(0, index);
+					String resolution_h_s = resolution_value.substring(index + 1);
 					if (MyDebug.LOG) {
 						Log.d(TAG, "resolution_w_s: " + resolution_w_s);
 						Log.d(TAG, "resolution_h_s: " + resolution_h_s);
@@ -1059,15 +1031,12 @@ public class Preview implements SurfaceHolder.Callback {
 						if (MyDebug.LOG)
 							Log.d(TAG, "resolution_h: " + resolution_h);
 						// now find size in valid list
-						for (int i = 0; i < sizes.size()
-								&& current_size_index == -1; i++) {
+						for (int i = 0; i < sizes.size() && current_size_index == -1; i++) {
 							CameraController.Size size = sizes.get(i);
-							if (size.width == resolution_w
-									&& size.height == resolution_h) {
+							if (size.width == resolution_w && size.height == resolution_h) {
 								current_size_index = i;
 								if (MyDebug.LOG)
-									Log.d(TAG, "set current_size_index to: "
-											+ current_size_index);
+									Log.d(TAG, "set current_size_index to: " + current_size_index);
 							}
 						}
 						if (current_size_index == -1) {
@@ -1076,8 +1045,7 @@ public class Preview implements SurfaceHolder.Callback {
 						}
 					} catch (NumberFormatException exception) {
 						if (MyDebug.LOG)
-							Log.d(TAG,
-									"resolution_value invalid format, can't parse w or h to int");
+							Log.d(TAG, "resolution_value invalid format, can't parse w or h to int");
 					}
 				}
 			}
@@ -1087,32 +1055,24 @@ public class Preview implements SurfaceHolder.Callback {
 				CameraController.Size current_size = null;
 				for (int i = 0; i < sizes.size(); i++) {
 					CameraController.Size size = sizes.get(i);
-					if (current_size == null
-							|| size.width * size.height > current_size.width
-									* current_size.height) {
+					if (current_size == null || size.width * size.height > current_size.width * current_size.height) {
 						current_size_index = i;
 						current_size = size;
 					}
 				}
 			}
 			if (current_size_index != -1) {
-				CameraController.Size current_size = sizes
-						.get(current_size_index);
+				CameraController.Size current_size = sizes.get(current_size_index);
 				if (MyDebug.LOG)
-					Log.d(TAG, "Current size index " + current_size_index
-							+ ": " + current_size.width + ", "
-							+ current_size.height);
+					Log.d(TAG, "Current size index " + current_size_index + ": " + current_size.width + ", " + current_size.height);
 
 				// now save, so it's available for PreferenceActivity
-				resolution_value = current_size.width + " "
-						+ current_size.height;
+				resolution_value = current_size.width + " " + current_size.height;
 				if (MyDebug.LOG) {
 					Log.d(TAG, "save new resolution_value: " + resolution_value);
 				}
 				SharedPreferences.Editor editor = sharedPreferences.edit();
-				editor.putString(
-						CameraActivityNew.getResolutionPreferenceKey(cameraId),
-						resolution_value);
+				editor.putString(CameraActivityNew.getResolutionPreferenceKey(cameraId), resolution_value);
 				editor.apply();
 			}
 			// size set later in setPreviewSize()
@@ -1132,20 +1092,17 @@ public class Preview implements SurfaceHolder.Callback {
 		initialiseVideoQuality();
 
 		current_video_quality = -1;
-		String video_quality_value_s = sharedPreferences.getString(
-				CameraActivityNew.getVideoQualityPreferenceKey(cameraId), "");
+		String video_quality_value_s = sharedPreferences.getString(CameraActivityNew.getVideoQualityPreferenceKey(cameraId), "");
 		if (MyDebug.LOG)
 			Log.d(TAG, "video_quality_value: " + video_quality_value_s);
 		if (video_quality_value_s.length() > 0) {
 			// parse the saved video quality, and make sure it is still valid
 			// now find value in valid list
-			for (int i = 0; i < video_quality.size()
-					&& current_video_quality == -1; i++) {
+			for (int i = 0; i < video_quality.size() && current_video_quality == -1; i++) {
 				if (video_quality.get(i).equals(video_quality_value_s)) {
 					current_video_quality = i;
 					if (MyDebug.LOG)
-						Log.d(TAG, "set current_video_quality to: "
-								+ current_video_quality);
+						Log.d(TAG, "set current_video_quality to: " + current_video_quality);
 				}
 			}
 			if (current_video_quality == -1) {
@@ -1157,16 +1114,12 @@ public class Preview implements SurfaceHolder.Callback {
 			// default to highest quality
 			current_video_quality = 0;
 			if (MyDebug.LOG)
-				Log.d(TAG,
-						"set video_quality value to "
-								+ video_quality.get(current_video_quality));
+				Log.d(TAG, "set video_quality value to " + video_quality.get(current_video_quality));
 		}
 		if (current_video_quality != -1) {
 			// now save, so it's available for PreferenceActivity
 			SharedPreferences.Editor editor = sharedPreferences.edit();
-			editor.putString(
-					CameraActivityNew.getVideoQualityPreferenceKey(cameraId),
-					video_quality.get(current_video_quality));
+			editor.putString(CameraActivityNew.getVideoQualityPreferenceKey(cameraId), video_quality.get(current_video_quality));
 			editor.apply();
 		}
 
@@ -1174,20 +1127,15 @@ public class Preview implements SurfaceHolder.Callback {
 			if (MyDebug.LOG)
 				Log.d(TAG, "set up flash");
 			current_flash_index = -1;
-			if (supported_flash_values != null
-					&& supported_flash_values.size() > 1) {
+			if (supported_flash_values != null && supported_flash_values.size() > 1) {
 				if (MyDebug.LOG)
 					Log.d(TAG, "flash values: " + supported_flash_values);
 
-				String flash_value = sharedPreferences.getString(
-						CameraActivityNew.getFlashPreferenceKey(cameraId), "");
+				String flash_value = sharedPreferences.getString(CameraActivityNew.getFlashPreferenceKey(cameraId), "");
 				if (flash_value.length() > 0) {
 					if (MyDebug.LOG)
 						Log.d(TAG, "found existing flash_value: " + flash_value);
-					if (!updateFlash(flash_value, false)) { // don't need to
-															// save, as this is
-															// the value that's
-															// already saved
+					if (!updateFlash(flash_value, false)) {
 						if (MyDebug.LOG)
 							Log.d(TAG, "flash value no longer supported!");
 						updateFlash(0, true);
@@ -1208,8 +1156,7 @@ public class Preview implements SurfaceHolder.Callback {
 			if (MyDebug.LOG)
 				Log.d(TAG, "set up focus");
 			current_focus_index = -1;
-			if (supported_focus_values != null
-					&& supported_focus_values.size() > 1) {
+			if (supported_focus_values != null && supported_focus_values.size() > 1) {
 				if (MyDebug.LOG)
 					Log.d(TAG, "focus values: " + supported_focus_values);
 
@@ -2683,10 +2630,8 @@ public class Preview implements SurfaceHolder.Callback {
 				Log.d(TAG, "currently taking a photo");
 			return;
 		}
-		if (this.supported_flash_values != null
-				&& this.supported_flash_values.size() > 1) {
-			int new_flash_index = (current_flash_index + 1)
-					% this.supported_flash_values.size();
+		if (this.supported_flash_values != null && this.supported_flash_values.size() > 1) {
+			int new_flash_index = (current_flash_index + 1) % this.supported_flash_values.size();
 			updateFlash(new_flash_index, true);
 		}
 	}
@@ -2723,30 +2668,18 @@ public class Preview implements SurfaceHolder.Callback {
 		if (MyDebug.LOG)
 			Log.d(TAG, "updateFlash(): " + new_flash_index);
 		// updates the Flash button, and Flash camera mode
-		if (supported_flash_values != null
-				&& new_flash_index != current_flash_index) {
+		if (supported_flash_values != null && new_flash_index != current_flash_index) {
 			boolean initial = current_flash_index == -1;
 			current_flash_index = new_flash_index;
 			if (MyDebug.LOG)
-				Log.d(TAG, "    current_flash_index is now "
-						+ current_flash_index + " (initial " + initial + ")");
+				Log.d(TAG, "    current_flash_index is now " + current_flash_index + " (initial " + initial + ")");
 
-			// Activity activity = (Activity)this.getContext();
-			String[] flash_entries = getResources().getStringArray(
-					R.array.flash_entries);
-			// String [] flash_icons =
-			// getResources().getStringArray(R.array.flash_icons);
-			String flash_value = supported_flash_values
-					.get(current_flash_index);
+			String[] flash_entries = getResources().getStringArray(R.array.flash_entries);
+			String flash_value = supported_flash_values.get(current_flash_index);
 			if (MyDebug.LOG)
 				Log.d(TAG, "    flash_value: " + flash_value);
-			String[] flash_values = getResources().getStringArray(
-					R.array.flash_values);
+			String[] flash_values = getResources().getStringArray(R.array.flash_values);
 			for (int i = 0; i < flash_values.length; i++) {
-				/*
-				 * if( MyDebug.LOG ) Log.d(TAG, "    compare to: " +
-				 * flash_values[i]);
-				 */
 				if (flash_value.equals(flash_values[i])) {
 					if (MyDebug.LOG)
 						Log.d(TAG, "    found entry: " + i);
@@ -2760,11 +2693,9 @@ public class Preview implements SurfaceHolder.Callback {
 			this.setFlash(flash_value);
 			if (save) {
 				// now save
-				SharedPreferences sharedPreferences = PreferenceManager
-						.getDefaultSharedPreferences(this.getContext());
+				SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this.getContext());
 				SharedPreferences.Editor editor = sharedPreferences.edit();
-				editor.putString(CameraActivityNew.getFlashPreferenceKey(cameraId),
-						flash_value);
+				editor.putString(CameraActivityNew.getFlashPreferenceKey(cameraId), flash_value);
 				editor.apply();
 			}
 		}
@@ -2773,9 +2704,7 @@ public class Preview implements SurfaceHolder.Callback {
 	private void setFlash(String flash_value) {
 		if (MyDebug.LOG)
 			Log.d(TAG, "setFlash() " + flash_value);
-		set_flash_value_after_autofocus = ""; // this overrides any previously
-												// saved setting, for during the
-												// startup autofocus
+		set_flash_value_after_autofocus = "";
 		if (camera_controller == null) {
 			if (MyDebug.LOG)
 				Log.d(TAG, "camera not opened!");
@@ -2795,13 +2724,6 @@ public class Preview implements SurfaceHolder.Callback {
 
 	// this returns the flash mode indicated by the UI, rather than from the
 	// camera parameters (may be different, e.g., in startup autofocus!)
-	/*
-	 * public String getCurrentFlashMode() { if( current_flash_index == -1 )
-	 * return null; String flash_value =
-	 * supported_flash_values.get(current_flash_index); String flash_mode =
-	 * convertFlashValueToMode(flash_value); return flash_mode; }
-	 */
-
 	void cycleFocusMode() {
 		if (MyDebug.LOG)
 			Log.d(TAG, "cycleFocusMode()");
@@ -3819,8 +3741,7 @@ public class Preview implements SurfaceHolder.Callback {
 		if (MyDebug.LOG)
 			Log.d(TAG, "setPopupIcon");
 		CameraActivityNew main_activity = (CameraActivityNew) this.getContext();
-		ImageButton popup = (ImageButton) main_activity
-				.findViewById(R.id.popup);
+		ImageButton popup = (ImageButton) main_activity.findViewById(R.id.popup);
 		String flash_value = getCurrentFlashValue();
 		if (MyDebug.LOG)
 			Log.d(TAG, "flash_value: " + flash_value);

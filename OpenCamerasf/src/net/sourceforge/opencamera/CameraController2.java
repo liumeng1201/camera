@@ -107,10 +107,6 @@ public class CameraController2 extends CameraController {
 		if( MyDebug.LOG )
 			Log.d(TAG, "camera now opened");
 
-		/*CameraCharacteristics characteristics = manager.getCameraCharacteristics(cameraIdS);
-	    StreamConfigurationMap configs = characteristics.get(CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP);
-	    android.util.Size [] camera_picture_sizes = configs.getOutputSizes(ImageFormat.JPEG);
-		imageReader = ImageReader.newInstance(camera_picture_sizes[0].getWidth(), , ImageFormat.JPEG, 2);*/
 	}
 
 	@Override
@@ -140,10 +136,6 @@ public class CameraController2 extends CameraController {
 			imageReader.close();
 			imageReader = null;
 		}
-		/*if( previewImageReader != null ) {
-			previewImageReader.close();
-			previewImageReader = null;
-		}*/
 	}
 
 	@Override
@@ -258,11 +250,6 @@ public class CameraController2 extends CameraController {
 				Log.d(TAG, "set size of surface holder");
 			holder.setFixedSize(width, height);
 		}
-		/*if( previewImageReader != null ) {
-			previewImageReader.close();
-		}
-		previewImageReader = ImageReader.newInstance(width, height, ImageFormat.YUV_420_888, 2); 
-		*/
 	}
 
 	@Override

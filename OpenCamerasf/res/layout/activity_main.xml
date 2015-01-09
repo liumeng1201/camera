@@ -10,8 +10,8 @@
 
         <FrameLayout
             android:id="@+id/preview"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_centerInParent="true" />
 
         <ZoomControls
@@ -54,6 +54,14 @@
         android:layout_height="match_parent"
         android:layout_alignParentRight="true"
         android:background="@color/black" >
+
+        <ImageButton
+            android:id="@+id/camera_close"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_centerHorizontal="true"
+            android:onClick="clickedClose"
+            android:padding="15dp" />
 
         <ImageButton
             android:id="@+id/take_photo"

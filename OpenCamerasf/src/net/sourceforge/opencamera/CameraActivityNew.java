@@ -317,6 +317,10 @@ public class CameraActivityNew extends Activity {
 
 	public void clickedGallery(View view) {
 	}
+	
+	public void clickedClose(View view) {
+		finish();
+	}
 
 	private void takePicture() {
 		this.preview.takePicturePressed();
