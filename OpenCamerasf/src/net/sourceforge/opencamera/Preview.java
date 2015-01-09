@@ -211,7 +211,6 @@ public class Preview implements SurfaceHolder.Callback {
 	private float[] deviceRotation = new float[9];
 	private float[] cameraRotation = new float[9];
 	private float[] deviceInclination = new float[9];
-	private boolean has_geo_direction = false;
 	private float[] geo_direction = new float[3];
 
 	// for testing:
@@ -273,10 +272,6 @@ public class Preview implements SurfaceHolder.Callback {
 				Log.d(TAG, "found zoom_factor: " + zoom_factor);
 		}
 
-		location_bitmap = BitmapFactory.decodeResource(this.getResources(),
-				R.drawable.earth);
-		location_off_bitmap = BitmapFactory.decodeResource(this.getResources(),
-				R.drawable.earth_off);
 	}
 
 	private Resources getResources() {
@@ -3806,15 +3801,7 @@ public class Preview implements SurfaceHolder.Callback {
 				.remapCoordinateSystem(this.deviceRotation,
 						SensorManager.AXIS_X, SensorManager.AXIS_Z,
 						this.cameraRotation);
-		this.has_geo_direction = true;
 		SensorManager.getOrientation(cameraRotation, geo_direction);
-		// SensorManager.getOrientation(deviceRotation, geo_direction);
-		/*
-		 * if( MyDebug.LOG ) { Log.d(TAG, "geo_direction: " +
-		 * (geo_direction[0]*180/Math.PI) + ", " +
-		 * (geo_direction[1]*180/Math.PI) + ", " +
-		 * (geo_direction[2]*180/Math.PI)); }
-		 */
 	}
 
 	public boolean supportsFaceDetection() {
