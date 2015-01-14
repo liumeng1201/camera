@@ -5,12 +5,16 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+//import com.jizhi.android.qiujieda.R;
+
 import android.annotation.SuppressLint;
+import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.preference.PreferenceManager;
@@ -26,6 +30,7 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 
+@TargetApi(Build.VERSION_CODES.HONEYCOMB) 
 public class FolderChooserDialog extends DialogFragment {
 	private static final String TAG = "FolderChooserFragment";
 

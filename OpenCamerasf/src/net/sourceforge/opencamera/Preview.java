@@ -14,6 +14,9 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Vector;
 
+//import com.jizhi.android.qiujieda.R;
+
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -59,7 +62,8 @@ import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.Toast;
 import android.widget.ZoomControls;
 
-public class Preview implements SurfaceHolder.Callback {
+@TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2) 
+public abstract class Preview implements SurfaceHolder.Callback {
 	private static final String TAG = "Preview";
 
 	private boolean using_android_l = false;
@@ -223,12 +227,14 @@ public class Preview implements SurfaceHolder.Callback {
 	public float test_angle = 0.0f;
 	public String test_last_saved_image = null;
 
+	private CameraController.Size screenSize;
 	@SuppressWarnings("deprecation")
-	Preview(Context context, Bundle savedInstanceState) {
+	Preview(Context context, Bundle savedInstanceState, CameraController.Size screenSize) {
 		if (MyDebug.LOG) {
 			Log.d(TAG, "new Preview");
 		}
 
+		this.screenSize = screenSize;
 		this.surfaceView = new MySurfaceView(context, savedInstanceState, this);
 
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -672,15 +678,7 @@ public class Preview implements SurfaceHolder.Callback {
 				startCameraPreview();
 			}
 		}
-		if (MyDebug.LOG) {
-			// Log.d(TAG, "time after starting camera preview: " +
-			// (System.currentTimeMillis() - debug_time));
-		}
 
-		// must be done after setting parameters, as this function may set
-		// parameters
-		// also needs to be done after starting preview for some devices (e.g.,
-		// Nexus 7)
 		if (this.has_zoom && zoom_factor != 0) {
 			int new_zoom_factor = zoom_factor;
 			zoom_factor = 0; // force zoomTo to actually update the zoom!
@@ -688,8 +686,7 @@ public class Preview implements SurfaceHolder.Callback {
 		}
 
 		if (take_photo) {
-			// take photo after a delay - otherwise we sometimes get a black
-			// image?!
+			// take photo after a delay - otherwise we sometimes get a black image?!
 			final Handler handler = new Handler();
 			handler.postDelayed(new Runnable() {
 				@Override
@@ -698,7 +695,7 @@ public class Preview implements SurfaceHolder.Callback {
 						Log.d(TAG, "do automatic take picture");
 					takePicture();
 				}
-			}, 500);
+			}, 200);
 		} else {
 			final Handler handler = new Handler();
 			handler.postDelayed(new Runnable() {
@@ -708,7 +705,7 @@ public class Preview implements SurfaceHolder.Callback {
 						Log.d(TAG, "do startup autofocus");
 					tryAutoFocus(true, false);
 				}
-			}, 500);
+			}, 200);
 		}
 	}
 
@@ -1047,12 +1044,16 @@ public class Preview implements SurfaceHolder.Callback {
 
 			if (current_size_index == -1) {
 				// set to largest
-				CameraController.Size current_size = null;
+				current_size_index = 0;
 				for (int i = 0; i < sizes.size(); i++) {
 					CameraController.Size size = sizes.get(i);
-					if (current_size == null || size.width * size.height > current_size.width * current_size.height) {
-						current_size_index = i;
-						current_size = size;
+					if (size.width <= screenSize.width * 1.5 && size.height <= screenSize.height * 1.5) {
+						if (i >= 1) {
+							current_size_index = i - 1;
+						} else {
+							current_size_index = 0;
+						}
+						break;
 					}
 				}
 			}
@@ -2288,10 +2289,7 @@ public class Preview implements SurfaceHolder.Callback {
 			int off_y = (int) (radius * Math.sin(Math.toRadians(angle)));
 			int cx = canvas.getWidth() / 2;
 			int cy = canvas.getHeight() / 2;
-			if (Math.abs(this.level_angle) <= close_angle) { // n.b., use
-																// level_angle,
-																// not angle or
-																// orig_level_angle
+			if (Math.abs(this.level_angle) <= close_angle) {
 				p.setColor(Color.rgb(20, 231, 21)); // Green A400
 			} else {
 				p.setColor(Color.WHITE);
@@ -3356,19 +3354,17 @@ public class Preview implements SurfaceHolder.Callback {
 					}
 				}
 				
-				// TODO 拍照成功
+				// TODO ���ճɹ���ת���ü�����
 				if (success && picFile != null) {
-					
+					takePhotoDone(picFile.getAbsolutePath());
 				}
 			}
 		};
 		{
 			camera_controller.setRotation(getImageVideoRotation());
 
-			SharedPreferences sharedPreferences = PreferenceManager
-					.getDefaultSharedPreferences(this.getContext());
-			boolean enable_sound = sharedPreferences.getBoolean(
-					CameraActivityNew.getShutterSoundPreferenceKey(), true);
+			SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this.getContext());
+			boolean enable_sound = sharedPreferences.getBoolean(CameraActivityNew.getShutterSoundPreferenceKey(), true);
 			if (MyDebug.LOG)
 				Log.d(TAG, "enable_sound? " + enable_sound);
 			camera_controller.enableShutterSound(enable_sound);
@@ -3394,6 +3390,8 @@ public class Preview implements SurfaceHolder.Callback {
 		if (MyDebug.LOG)
 			Log.d(TAG, "takePicture exit");
 	}
+	
+	abstract void takePhotoDone(String filepath);
 
 	private void setDateTimeExif(ExifInterface exif) {
 		String exif_datetime = exif.getAttribute(ExifInterface.TAG_DATETIME);
@@ -3750,7 +3748,7 @@ public class Preview implements SurfaceHolder.Callback {
 		} else if (flash_value != null && flash_value.equals("flash_on")) {
 			popup.setImageResource(R.drawable.popup_flash_on);
 		} else {
-			popup.setImageResource(R.drawable.popup);
+			popup.setImageResource(R.drawable.popup_flash_on);
 		}
 	}
 
