@@ -9,6 +9,7 @@ import java.util.Locale;
 import java.util.Map;
 
 import net.sourceforge.opencamera.CameraController.Size;
+import net.sourceforge.test.ImageViewActivity;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.Activity;
@@ -95,6 +96,9 @@ public class CameraActivityNew extends Activity {
 //				intent.putExtra("photo_orignal", filepath);
 //				intent.putExtra("getPhotoFromGallery", false);
 //				startActivity(intent);
+				Intent intent = new Intent(CameraActivityNew.this, ImageViewActivity.class);
+				intent.putExtra("filepath", filepath);
+				startActivity(intent);
 			}
 		};
 		((ViewGroup) findViewById(R.id.preview)).addView(preview.getView());

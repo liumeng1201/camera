@@ -50,6 +50,9 @@
             android:taskAffinity="" >
         </activity>
 
+        <activity 
+            android:name="net.sourceforge.test.ImageViewActivity"
+            android:screenOrientation="landscape" />
     </application>
 
 </manifest>

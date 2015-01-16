@@ -988,7 +988,7 @@ public abstract class Preview implements SurfaceHolder.Callback {
 				editor.apply();
 			}
 		}
-
+// TODO picture sizes
 		{
 			if (MyDebug.LOG)
 				Log.d(TAG, "set up picture sizes");
@@ -1045,9 +1045,13 @@ public abstract class Preview implements SurfaceHolder.Callback {
 			if (current_size_index == -1) {
 				// set to largest
 				current_size_index = 0;
+				Toast.makeText(activity, "support picture size = " + sizes.size() + "\n"
+								+ "first width = " + sizes.get(0).width + " height = " + sizes.get(0).height, Toast.LENGTH_SHORT).show();
+				Log.e("lm", "support picture size = " + sizes.size() + "\n"
+						+ "first width = " + sizes.get(0).width + " height = " + sizes.get(0).height);
 				for (int i = 0; i < sizes.size(); i++) {
 					CameraController.Size size = sizes.get(i);
-					if (size.width <= screenSize.width * 1.5 && size.height <= screenSize.height * 1.5) {
+					if (size.width <= screenSize.width * 1.4 && size.height <= screenSize.height * 1.4) {
 						if (i >= 1) {
 							current_size_index = i - 1;
 						} else {
@@ -1057,6 +1061,10 @@ public abstract class Preview implements SurfaceHolder.Callback {
 					}
 				}
 			}
+			Toast.makeText(activity, "current picture size = " + current_size_index + "\n"
+							+ "width = " + sizes.get(current_size_index).width + " height = " + sizes.get(current_size_index).height, Toast.LENGTH_SHORT).show();
+			Log.e("lm", "current picture size = " + current_size_index + "\n"
+					+ "width = " + sizes.get(current_size_index).width + " height = " + sizes.get(current_size_index).height);
 			if (current_size_index != -1) {
 				CameraController.Size current_size = sizes.get(current_size_index);
 				if (MyDebug.LOG)
@@ -1264,8 +1272,8 @@ public abstract class Preview implements SurfaceHolder.Callback {
 		}
 		// set optimal preview size
 		if (supported_preview_sizes != null
-				&& supported_preview_sizes.size() > 0) {
-			CameraController.Size best_size = getOptimalPreviewSize(supported_preview_sizes);
+				&& supported_preview_sizes.size() > 0) {// TODO set preview size
+			CameraController.Size best_size = getOptimalPreviewSize(supported_preview_sizes, screenSize);
 			camera_controller.setPreviewSize(best_size.width, best_size.height);
 			if (this.using_android_l) {
 				// in Android L, calling setPreviewSize changes the size of the
@@ -1738,7 +1746,7 @@ public abstract class Preview implements SurfaceHolder.Callback {
 	}
 
 	public CameraController.Size getOptimalPreviewSize(
-			List<CameraController.Size> sizes) {
+			List<CameraController.Size> sizes, CameraController.Size screenSize) {
 		if (MyDebug.LOG)
 			Log.d(TAG, "getOptimalPreviewSize()");
 		final double ASPECT_TOLERANCE = 0.05;
@@ -1762,8 +1770,8 @@ public abstract class Preview implements SurfaceHolder.Callback {
 		}
 		// Try to find the size which matches the aspect ratio, and is closest
 		// match to display height
-		for (CameraController.Size size : sizes) {
-			if (MyDebug.LOG)
+		/*for (CameraController.Size size : sizes) {
+			//if (MyDebug.LOG) 
 				Log.d(TAG, "    supported preview size: " + size.width + ", "
 						+ size.height);
 			double ratio = (double) size.width / size.height;
@@ -1773,19 +1781,32 @@ public abstract class Preview implements SurfaceHolder.Callback {
 				optimalSize = size;
 				minDiff = Math.abs(size.height - targetHeight);
 			}
+		}*/
+		// TODO preview size
+		for (int i = 0; i < sizes.size(); i++) {
+			CameraController.Size size = sizes.get(i);
+			if (size.width <= screenSize.width * 1.4 && size.height <= screenSize.height * 1.4) {
+				if (i >= 1) {
+					optimalSize = sizes.get(i - 1);
+				} else {
+					optimalSize = sizes.get(0);
+				}
+				break;
+			}
 		}
+		
 		if (optimalSize == null) {
 			// can't find match for aspect ratio, so find closest one
 			if (MyDebug.LOG)
 				Log.d(TAG, "no preview size matches the aspect ratio");
 			optimalSize = getClosestSize(sizes, targetRatio);
 		}
-		if (MyDebug.LOG) {
+		//if (MyDebug.LOG) {
 			Log.d(TAG, "chose optimalSize: " + optimalSize.width + " x "
 					+ optimalSize.height);
 			Log.d(TAG, "optimalSize ratio: "
 					+ ((double) optimalSize.width / optimalSize.height));
-		}
+		//}
 		return optimalSize;
 	}
 
@@ -1815,12 +1836,12 @@ public abstract class Preview implements SurfaceHolder.Callback {
 				Log.d(TAG, "no picture size matches the aspect ratio");
 			optimalSize = getClosestSize(sizes, targetRatio);
 		}
-		if (MyDebug.LOG) {
+		//if (MyDebug.LOG) {
 			Log.d(TAG, "chose optimalSize: " + optimalSize.width + " x "
 					+ optimalSize.height);
 			Log.d(TAG, "optimalSize ratio: "
 					+ ((double) optimalSize.width / optimalSize.height));
-		}
+		//}
 		return optimalSize;
 	}
 
@@ -2198,7 +2219,6 @@ public abstract class Preview implements SurfaceHolder.Callback {
 		final int top_y = (int) (5 * scale + 0.5f); // convert dps to pixels
 
 		final double close_angle = 1.0f;
-		// TODO
 		if (camera_controller != null && this.phase != PHASE_PREVIEW_PAUSED) {
 			if (this.isOnTimer()) {
 				long remaining_time = (take_photo_time - System.currentTimeMillis() + 999) / 1000;
@@ -3354,7 +3374,6 @@ public abstract class Preview implements SurfaceHolder.Callback {
 					}
 				}
 				
-				// TODO ���ճɹ���ת���ü�����
 				if (success && picFile != null) {
 					takePhotoDone(picFile.getAbsolutePath());
 				}
